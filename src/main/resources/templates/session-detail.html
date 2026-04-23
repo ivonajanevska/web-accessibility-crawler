@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали за сесија</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
+        .info-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .info-box p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+
+        .info-box span {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-done { color: green; font-weight: bold; }
+        .status-failed { color: red; font-weight: bold; }
+        .status-progress { color: orange; font-weight: bold; }
+
+        .badge {
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .badge-zero {
+            background-color: #27ae60;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        a {
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .no-pages {
+            color: #888;
+            font-style: italic;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<a href="/" class="back-link">← Назад на почетна</a>
+
+<h1>Детали за сесија #<span th:text="${crawlSession.id}"></span></h1>
+
+
+<div class="info-box">
+    <p><span>URL:</span> <span th:text="${crawlSession.baseUrl}"></span></p>
+    <p><span>Статус:</span>
+        <span th:text="${crawlSession.status}"
+              th:class="${crawlSession.status == 'DONE'} ? 'status-done' :
+                             (${crawlSession.status == 'FAILED'} ? 'status-failed' :
+                             'status-progress')">
+            </span>
+    </p>
+    <p><span>Започнато:</span>
+        <span th:text="${#temporals.format(crawlSession.startedAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
+    </p>
+    <p><span>Завршено:</span>
+        <span th:text="${crawlSession.finishedAt != null} ?
+                            ${#temporals.format(crawlSession.finishedAt, 'dd.MM.yyyy HH:mm:ss')} :
+                            'Во тек...'">
+            </span>
+    </p>
+    <p>📄 <span>Вкупно посетени страници:</span>
+        <span th:text="${pages.size()}"></span>
+    </p>
+</div>
+
+
+<h2>Посетени страници</h2>
+
+<div th:if="${pages.empty}" class="no-pages">
+    Нема посетени страници во оваа сесија.
+</div>
+
+<table th:if="${!pages.empty}">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>URL на страница</th>
+        <th>Слики</th>
+        <th>Видеа</th>
+        <th>Проблеми</th>
+        <th>Детали</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="page : ${pages}">
+        <td th:text="${page.id}"></td>
+        <td th:text="${page.pageUrl}"></td>
+        <td th:text="${page.totalImages}"></td>
+        <td th:text="${page.totalVideos}"></td>
+        <td>
+                    <span th:text="${page.totalIssues}"
+                          th:class="${page.totalIssues == 0} ? 'badge-zero' : 'badge'">
+                    </span>
+        </td>
+        <td>
+            <a th:href="@{/pages/{id}(id=${page.id})}">
+                Прегледај →
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

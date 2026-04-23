@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали за страница</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
+        .info-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .info-box p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+
+        .info-box span {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .type-image {
+            background-color: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .type-video {
+            background-color: #9b59b6;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .issue-type {
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+
+        .html-code {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 400px;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+
+        a {
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .no-issues {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            color: #27ae60;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<a th:href="@{/sessions/{id}(id=${page.crawlSession.id})}"
+   class="back-link">← Назад на сесија</a>
+
+<h1>Детали за страница #<span th:text="${page.id}"></span></h1>
+
+
+<div class="info-box">
+    <p><span>URL:</span> <span th:text="${page.pageUrl}"></span></p>
+    <p><span>Вкупно слики:</span> <span th:text="${page.totalImages}"></span></p>
+    <p><span>Вкупно видеа:</span> <span th:text="${page.totalVideos}"></span></p>
+    <p><span>Вкупно проблеми:</span> <span th:text="${page.totalIssues}"></span></p>
+</div>
+
+
+<h2>Пронајдени проблеми</h2>
+
+<div th:if="${issues.empty}" class="no-issues">
+    ✅ Нема пронајдени проблеми на оваа страница!
+</div>
+
+<table th:if="${!issues.empty}">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Тип на елемент</th>
+        <th>Тип на проблем</th>
+        <th>Опис</th>
+        <th>HTML елемент</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="issue : ${issues}">
+        <td th:text="${issue.id}"></td>
+        <td>
+                    <span th:text="${issue.elementType}"
+                          th:class="${issue.elementType == 'IMAGE'} ? 'type-image' : 'type-video'">
+                    </span>
+        </td>
+        <td>
+                    <span th:text="${issue.issueType}"
+                          class="issue-type">
+                    </span>
+        </td>
+        <td th:text="${issue.description}"></td>
+        <td>
+            <div class="html-code"
+                 th:text="${issue.elementHTML}">
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
