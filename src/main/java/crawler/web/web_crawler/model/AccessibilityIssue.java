@@ -21,4 +21,5 @@ public class AccessibilityIssue {
     @ManyToOne
     @JoinColumn(name = "page_result_id")
     private PageResult pageResult;
+    private String suggestion;
 }

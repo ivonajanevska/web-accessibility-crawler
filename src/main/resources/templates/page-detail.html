@@ -164,6 +164,7 @@
         <th>Тип на проблем</th>
         <th>Опис</th>
         <th>HTML елемент</th>
+        <th>Решение</th>
     </tr>
     </thead>
     <tbody>
@@ -183,6 +184,11 @@
         <td>
             <div class="html-code"
                  th:text="${issue.elementHTML}">
+            </div>
+        </td>
+        <td>
+            <div class="html-code"
+                 th:text="${issue.suggestion}">
             </div>
         </td>
     </tr>

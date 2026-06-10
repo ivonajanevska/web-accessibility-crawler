@@ -261,6 +261,7 @@ public class AccessibilityCheckerServiceImpl implements AccessibilityCheckerServ
         issue.setIssueType(issueType);
         issue.setDescription(description);
         issue.setElementHTML(elementHTML);
+        issue.setSuggestion(issueType.getSuggestion());
         return issue;
     }
 }
