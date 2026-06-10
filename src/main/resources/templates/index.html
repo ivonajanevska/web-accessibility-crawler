@@ -154,6 +154,8 @@
         <th>Статус</th>
         <th>Датум</th>
         <th>Детали</th>
+        <th>Score</th>
+        <th>Grade</th>
     </tr>
     </thead>
     <tbody>
@@ -172,6 +174,16 @@
             <a th:href="@{/sessions/{id}(id=${crawlSession.id})}">
                 Прегледај →
             </a>
+        </td>
+        <td th:text="${crawlSession.averageScore}"></td>
+        <td>
+    <span th:text="${crawlSession.overallGrade}"
+          th:class="${crawlSession.overallGrade == 'A'} ? 'grade-a' :
+                    (${crawlSession.overallGrade == 'B'} ? 'grade-b' :
+                    (${crawlSession.overallGrade == 'C'} ? 'grade-c' :
+                    (${crawlSession.overallGrade == 'D'} ? 'grade-d' :
+                    'grade-f')))">
+    </span>
         </td>
     </tr>
     </tbody>

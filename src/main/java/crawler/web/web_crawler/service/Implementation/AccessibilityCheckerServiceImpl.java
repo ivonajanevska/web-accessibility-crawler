@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.devtools.idealized.Javascript;
 import org.springframework.stereotype.Service;
 
 
@@ -30,6 +33,7 @@ public class AccessibilityCheckerServiceImpl implements AccessibilityCheckerServ
         issues.addAll(checkLanguage(document));
         issues.addAll(checkTitle(document));
         issues.addAll(checkHeadings(document));
+        //issues.addAll(checkZoomAccessibility(document, ));
         return issues;
     }
 
@@ -189,6 +193,8 @@ public class AccessibilityCheckerServiceImpl implements AccessibilityCheckerServ
 
     }
 
+
+
     private List<AccessibilityIssue> checkHeadings (Document document) {
         List<AccessibilityIssue> issues = new ArrayList<>();
 
@@ -226,6 +232,15 @@ public class AccessibilityCheckerServiceImpl implements AccessibilityCheckerServ
         return issues;
     }
 
+    private List<AccessibilityIssue> checkZoomAccessibility(Document document, WebDriver driver) {
+
+
+
+        List<AccessibilityIssue> issues = new ArrayList<>();
+
+
+        return issues;
+    }
 
     private boolean isFilename(String altText) {
         String lower = altText.toLowerCase();
@@ -237,6 +252,7 @@ public class AccessibilityCheckerServiceImpl implements AccessibilityCheckerServ
                 lower.endsWith(".svg") ||
                 lower.endsWith(".bmp");
     }
+
 
     private AccessibilityIssue createIssue(ElementType elementType, IssueType issueType, String description, String elementHTML)
     {

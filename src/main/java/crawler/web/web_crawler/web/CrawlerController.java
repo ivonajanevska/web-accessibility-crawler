@@ -1,7 +1,9 @@
 package crawler.web.web_crawler.web;
 
+import crawler.web.web_crawler.model.AccessibilityIssue;
 import crawler.web.web_crawler.model.CrawlSession;
 import crawler.web.web_crawler.model.PageResult;
+import crawler.web.web_crawler.service.AccessibilityIssueService;
 import crawler.web.web_crawler.service.CrawlSessionService;
 import crawler.web.web_crawler.service.CrawlerService;
 import crawler.web.web_crawler.service.PageResultService;
@@ -22,6 +24,7 @@ public class CrawlerController {
     private final CrawlerService crawlerService;
     private final CrawlSessionService crawlSessionService;
     private final PageResultService pageResultService;
+    private final AccessibilityIssueService accessibilityIssueService;
 
     // ═══════════════════════════════════════════════
     // ПОЧЕТНА СТРАНИЦА
@@ -35,14 +38,7 @@ public class CrawlerController {
     // ═══════════════════════════════════════════════
 
     // Прима URL и maxDepth, започнува crawling
-    @PostMapping("/crawl")
-    public String startCrawl(@RequestParam String url,
-                             @RequestParam(defaultValue = "1") int maxDepth,
-                             Model model) {
 
-        CrawlSession session = crawlerService.startCrawling(url, maxDepth);
-        return "redirect:/sessions/" + session.getId();
-    }
 
     // ═══════════════════════════════════════════════
     // СЕСИИ
@@ -56,6 +52,14 @@ public class CrawlerController {
         return "index";
     }
 
+    @PostMapping("/crawl")
+    public String startCrawl(@RequestParam String url,
+                             @RequestParam(defaultValue = "1") int maxDepth,
+                             Model model) {
+        CrawlSession session = crawlerService.startCrawling(url, maxDepth);
+        return "redirect:/sessions/" + session.getId();
+
+    }
     // Детали за една сесија
     @GetMapping("/sessions/{id}")
     public String getSessionById(@PathVariable Long id, Model model) {
@@ -75,9 +79,11 @@ public class CrawlerController {
     @GetMapping("/pages/{id}")
     public String getPageById(@PathVariable Long id, Model model) {
         PageResult page = pageResultService.getPageById(id);
-
+        List<AccessibilityIssue> issues = accessibilityIssueService.getIssuesByPageId(id);
         model.addAttribute("page", page);
         model.addAttribute("issues", page.getIssues());
         return "page-detail"; // → templates/page-detail.html
     }
+
+
 }

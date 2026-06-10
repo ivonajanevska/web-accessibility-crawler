@@ -19,6 +19,8 @@ public class CrawlSession {
     private LocalDateTime startedAt;
     private LocalDateTime finishedAt;
     private String status;
+    private double averageScore;
+    private String overallGrade;
 
     @OneToMany(mappedBy = "crawlSession", cascade = CascadeType.ALL)
     private List<PageResult> pageResults;

@@ -17,6 +17,8 @@ public class PageResult {
     private int totalImages;
     private int totalVideos;
     private int totalIssues;
+    private int score;
+    private String grade;
 
     @ManyToOne
     @JoinColumn(name = "crawl_session_id")

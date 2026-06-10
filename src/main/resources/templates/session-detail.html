@@ -97,6 +97,13 @@
             font-style: italic;
             padding: 20px 0;
         }
+
+        .grade-a { color: #27ae60; font-weight: bold; }
+        .grade-b { color: #2ecc71; font-weight: bold; }
+        .grade-c { color: #f39c12; font-weight: bold; }
+        .grade-d { color: #e67e22; font-weight: bold; }
+        .grade-f { color: #e74c3c; font-weight: bold; }
+
     </style>
 </head>
 <body>
@@ -127,6 +134,15 @@
     <p>📄 <span>Вкупно посетени страници:</span>
         <span th:text="${pages.size()}"></span>
     </p>
+    <p><span>Просечен Score:</span>
+        <span th:text="${crawlSession.averageScore}"></span>/100
+    </p>
+
+    <p><span>Оценка:</span>
+        <span th:text="${crawlSession.overallGrade}"
+              th:class="'grade-' + ${crawlSession.overallGrade.toLowerCase()}">
+        </span>
+    </p>
 </div>
 
 
@@ -144,6 +160,8 @@
         <th>Слики</th>
         <th>Видеа</th>
         <th>Проблеми</th>
+        <th>Score</th>
+        <th>Grade</th>
         <th>Детали</th>
     </tr>
     </thead>
@@ -158,6 +176,8 @@
                           th:class="${page.totalIssues == 0} ? 'badge-zero' : 'badge'">
                     </span>
         </td>
+        <td th:text="${page.score}"></td>
+        <td th:text="${page.grade}"></td>
         <td>
             <a th:href="@{/pages/{id}(id=${page.id})}">
                 Прегледај →

@@ -6,5 +6,6 @@ public enum ElementType {
     IFRAME,
     LANGUAGE,
     TITLE,
-    HEADING
+    HEADING,
+    PAGE
 }
