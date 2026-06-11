@@ -40,6 +40,7 @@ The project follows the Layered Architecture:
 | Jsoup | HTML parsing and analysis |
 | Spring Data JPA | ORM / data access |
 | H2 Database | In-memory database |
+| PostgreSQL | Persistent relational database (used for production) |
 | Thymeleaf | Frontend template engine |
 | Lombok | Boilerplate code reduction |
 
