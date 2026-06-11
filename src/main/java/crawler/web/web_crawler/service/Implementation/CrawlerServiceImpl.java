@@ -58,6 +58,20 @@ public class CrawlerServiceImpl implements CrawlerService {
         return session;
     }
 
+    @Override
+    public List<CrawlSession> startBatchCrawling(List<String> urls, int maxDepth) {
+        List<CrawlSession> sessions = new ArrayList<>();
+
+        for (String url : urls) {
+            String trimmedUrl = url.trim();
+            if (!trimmedUrl.isEmpty()){
+                CrawlSession session = startCrawling(trimmedUrl, maxDepth);
+                sessions.add(session);
+            }
+        }
+        return sessions;
+    }
+
     // ═══════════════════════════════════════════════
     // CRAWLING
     // ═══════════════════════════════════════════════

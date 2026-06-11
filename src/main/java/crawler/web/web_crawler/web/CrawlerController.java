@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,25 +30,8 @@ public class CrawlerController {
     private final PageResultService pageResultService;
     private final AccessibilityIssueService accessibilityIssueService;
 
-    // ═══════════════════════════════════════════════
-    // ПОЧЕТНА СТРАНИЦА
-    // ═══════════════════════════════════════════════
-
-    // Ја прикажува почетната страница со формата
 
 
-    // ═══════════════════════════════════════════════
-    // CRAWLING
-    // ═══════════════════════════════════════════════
-
-    // Прима URL и maxDepth, започнува crawling
-
-
-    // ═══════════════════════════════════════════════
-    // СЕСИИ
-    // ═══════════════════════════════════════════════
-
-    // Листа на сите сесии
     @GetMapping("/")
     public String homePage(Model model) {
         List<CrawlSession> sessions = crawlSessionService.getAllSessions();
@@ -53,14 +40,22 @@ public class CrawlerController {
     }
 
     @PostMapping("/crawl")
-    public String startCrawl(@RequestParam String url,
+    public String startCrawl(@RequestParam String urls,
                              @RequestParam(defaultValue = "1") int maxDepth,
                              Model model) {
-        CrawlSession session = crawlerService.startCrawling(url, maxDepth);
-        return "redirect:/sessions/" + session.getId();
 
+        List<String> urlList = parseUrls(urls);
+
+        if (urlList.size() == 1) {
+            CrawlSession session = crawlerService.startCrawling(urlList.get(0), maxDepth);
+            return "redirect:/sessions/" + session.getId();
+        } else {
+            List<CrawlSession> sessions = crawlerService.startBatchCrawling(urlList, maxDepth);
+            model.addAttribute("sessions", sessions);
+            return "redirect:/";
+        }
     }
-    // Детали за една сесија
+
     @GetMapping("/sessions/{id}")
     public String getSessionById(@PathVariable Long id, Model model) {
         CrawlSession crawlSession = crawlSessionService.getSessionById(id);
@@ -71,19 +66,55 @@ public class CrawlerController {
         return "session-detail";
     }
 
-    // ═══════════════════════════════════════════════
-    // СТРАНИЦИ
-    // ═══════════════════════════════════════════════
 
-    // Детали за една страница и нејзините проблеми
+
     @GetMapping("/pages/{id}")
     public String getPageById(@PathVariable Long id, Model model) {
         PageResult page = pageResultService.getPageById(id);
         List<AccessibilityIssue> issues = accessibilityIssueService.getIssuesByPageId(id);
         model.addAttribute("page", page);
-        model.addAttribute("issues", page.getIssues());
-        return "page-detail"; // → templates/page-detail.html
+        model.addAttribute("issues", issues);
+        return "page-detail";
+    }
+
+    @PostMapping("/batch-crawl")
+    public String startBatchCrawl(@RequestParam String urls,
+                                  @RequestParam (defaultValue = "1") int maxDepth,
+                                  Model model)
+    {
+        List<String> urlList = parseUrls(urls);
+        List<CrawlSession> sessions = crawlerService.startBatchCrawling(urlList, maxDepth);
+
+        model.addAttribute("sessions", sessions);
+        return "batch-results";
+    }
+
+    @PostMapping("/batch-crawl-csv")
+    public String startBatchCrawlCsv(@RequestParam("file") MultipartFile file,
+                                     @RequestParam(defaultValue = "1") int maxDepth,
+                                     Model model) throws IOException {
+
+        List<String> urlList = parseCsvFile(file);
+        List<CrawlSession> sessions = crawlerService.startBatchCrawling(urlList, maxDepth);
+
+        model.addAttribute("sessions", sessions);
+        return "batch-results";
     }
 
 
+
+    private List<String> parseUrls(String urls) {
+        return Arrays.stream(urls.split("[\\n\\r\\s,]+"))
+                .map(String::trim)
+                .filter(url -> !url.isEmpty())
+                .collect(Collectors.toList());
+    }
+
+    private List<String> parseCsvFile(MultipartFile file) throws IOException {
+        String content = new String(file.getBytes());
+        return Arrays.stream(content.split("[\\n\\r,]+"))
+                .map(String::trim)
+                .filter(url -> !url.isEmpty())
+                .collect(Collectors.toList());
+    }
 }

@@ -123,10 +123,13 @@
 <div class="form-container">
     <h2 style="margin-top: 0;">Внеси URL за скенирање</h2>
     <form action="/crawl" method="post">
-        <input type="text"
-               name="url"
-               placeholder="https://example.com"
-               required/>
+        <textarea name="urls"
+                  rows="1"
+                  placeholder="Внеси еден или повеќе URL-ови (секој во нов ред)&#10;https://archismart.mk&#10;https://time.mk"
+                  style="width: 70%; padding: 10px; font-size: 15px;
+                         border: 1px solid #ccc; border-radius: 4px;
+                         resize: vertical;">
+        </textarea>
 
         <label style="margin-left: 15px;">Длабочина:</label>
         <input type="number"
@@ -136,6 +139,19 @@
                max="3"/>
 
         <button type="submit">Скенирај</button>
+    </form>
+    <hr style="margin: 20px 0;">
+    <form action="/batch-crawl-csv"
+          method="post"
+          enctype="multipart/form-data">
+        <label>или прикачи CSV фајл:</label>
+        <input type="file" name="file" accept=".csv" style="margin: 0 10px;">
+        <input type="number"
+               name="maxDepth"
+               value="1"
+               min="1"
+               max="3"/>
+        <button type="submit">Скенирај CSV</button>
     </form>
 </div>
 
