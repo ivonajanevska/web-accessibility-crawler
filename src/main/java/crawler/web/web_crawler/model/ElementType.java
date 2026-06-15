@@ -7,5 +7,6 @@ public enum ElementType {
     LANGUAGE,
     TITLE,
     HEADING,
-    PAGE
+    PAGE,
+    FORM
 }

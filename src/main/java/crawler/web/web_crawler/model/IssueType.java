@@ -43,8 +43,11 @@ public enum IssueType {
     // KEYBOARD
     KEYBOARD_TRAP(5, "Ensure keyboard focus is never trapped. Users must be able to navigate away from any component using only the keyboard."),
     BAD_TABINDEX(2, "Avoid using tabindex values greater than 0. Use tabindex='0' to include elements in natural tab order or tabindex='-1' to exclude them."),
-    MISSING_SKIP_LINK(2, "Add a 'Skip to content' link at the top of the page. Example: <a href='#main-content'>Skip to main content</a>.");
+    MISSING_SKIP_LINK(2, "Add a 'Skip to content' link at the top of the page. Example: <a href='#main-content'>Skip to main content</a>."),
 
+    FORM_INPUT_MISSING_LABEL(3, "Add a <label> element associated with this input. Example: <label for='email'>Email</label><input id='email' type='email'>"),
+    FORM_LABEL_MISSING_FOR(2, "Add a 'for' attribute to the label that matches the input's id. Example: <label for='email'>Email</label>"),
+    FORM_LABEL_FOR_MISMATCH(3, "The label's 'for' attribute does not match any input id. Ensure the 'for' value matches the corresponding input's id exactly.");
     private final int weight;
     private final String suggestion;
 

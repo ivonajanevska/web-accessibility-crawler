@@ -29,9 +29,7 @@ public class CrawlerServiceImpl implements CrawlerService {
     private final AccessibilityCheckerService accessibilityCheckerService;
     private final ScoreCalculationService scoreCalculationService;
 
-    // ═══════════════════════════════════════════════
-    // ЈАВНА МЕТОДА
-    // ═══════════════════════════════════════════════
+
 
     @Override
     public CrawlSession startCrawling(String baseUrl, int maxDepth) {
@@ -72,9 +70,7 @@ public class CrawlerServiceImpl implements CrawlerService {
         return sessions;
     }
 
-    // ═══════════════════════════════════════════════
-    // CRAWLING
-    // ═══════════════════════════════════════════════
+
 
     private void crawlPage(WebDriver driver,
                            String url,
@@ -105,9 +101,7 @@ public class CrawlerServiceImpl implements CrawlerService {
         }
     }
 
-    // ═══════════════════════════════════════════════
-    // ПОМОШНИ МЕТОДИ ЗА CRAWLING
-    // ═══════════════════════════════════════════════
+
 
     private boolean shouldSkip(String url,
                                String baseUrl,
@@ -171,9 +165,7 @@ public class CrawlerServiceImpl implements CrawlerService {
         }
     }
 
-    // ═══════════════════════════════════════════════
-    // SESSION МЕТОДИ
-    // ═══════════════════════════════════════════════
+
 
     private void finalizeSession(CrawlSession session) {
         List<PageResult> pages = pageResultService.getPagesBySessionId(session.getId());
@@ -193,9 +185,6 @@ public class CrawlerServiceImpl implements CrawlerService {
         crawlSessionService.updateSession(session);
     }
 
-    // ═══════════════════════════════════════════════
-    // DRIVER
-    // ═══════════════════════════════════════════════
 
     private WebDriver createDriver() {
         ChromeOptions options = new ChromeOptions();
@@ -205,9 +194,7 @@ public class CrawlerServiceImpl implements CrawlerService {
         return new ChromeDriver(options);
     }
 
-    // ═══════════════════════════════════════════════
-    // KEYBOARD NAVIGATION
-    // ═══════════════════════════════════════════════
+
 
     private List<AccessibilityIssue> checkKeyboardNavigation(WebDriver driver) {
         List<AccessibilityIssue> issues = new ArrayList<>();

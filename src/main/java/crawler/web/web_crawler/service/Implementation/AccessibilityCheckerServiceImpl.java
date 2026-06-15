@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -33,6 +35,7 @@ public class AccessibilityCheckerServiceImpl implements AccessibilityCheckerServ
         issues.addAll(checkLanguage(document));
         issues.addAll(checkTitle(document));
         issues.addAll(checkHeadings(document));
+        issues.addAll(checkFormLabels(document));
         //issues.addAll(checkZoomAccessibility(document, ));
         return issues;
     }
@@ -226,6 +229,53 @@ public class AccessibilityCheckerServiceImpl implements AccessibilityCheckerServ
             if (curr - prev > 1)
             {
                 issues.add(createIssue(ElementType.HEADING, IssueType.HEADING_STRUCTURE_INVALID, "This structure is not valid", headings.get(i).outerHtml()));
+            }
+        }
+
+        return issues;
+    }
+
+
+    private List<AccessibilityIssue> checkFormLabels(Document document) {
+        List<AccessibilityIssue> issues = new ArrayList<>();
+
+        Elements labels = document.select("label");
+        Elements inputs = document.select("input[type=text], input[type=email], input[type=password], input[type=tel], input[type=number], textarea, select");
+
+        // Собери ги сите id-ови на input елементи
+        Set<String> inputIds = new HashSet<>();
+        for (Element input : inputs) {
+            if (input.hasAttr("id")) {
+                inputIds.add(input.attr("id"));
+            }
+        }
+
+        // Собери ги сите 'for' вредности од label елементи
+        Set<String> labelForValues = new HashSet<>();
+
+        for (Element label : labels) {
+            if (!label.hasAttr("for")) {
+                issues.add(createIssue(ElementType.FORM, IssueType.FORM_LABEL_MISSING_FOR,
+                        "Label is missing the 'for' attribute", label.outerHtml()));
+            } else {
+                String forValue = label.attr("for");
+                labelForValues.add(forValue);
+
+                if (!inputIds.contains(forValue)) {
+                    issues.add(createIssue(ElementType.FORM, IssueType.FORM_LABEL_FOR_MISMATCH,
+                            "Label 'for' attribute does not match any input id: " + forValue,
+                            label.outerHtml()));
+                }
+            }
+        }
+
+        // Провери дали секој input има соодветен label
+        for (Element input : inputs) {
+            String inputId = input.attr("id");
+
+            if (inputId.isEmpty() || !labelForValues.contains(inputId)) {
+                issues.add(createIssue(ElementType.FORM, IssueType.FORM_INPUT_MISSING_LABEL,
+                        "Input field is missing an associated label", input.outerHtml()));
             }
         }
 
