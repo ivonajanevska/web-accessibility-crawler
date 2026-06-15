@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Batch резултати</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1, h2 { color: #2c3e50; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f9f9f9; }
+
+        .status-done { color: green; font-weight: bold; }
+        .status-failed { color: red; font-weight: bold; }
+
+        .grade-a { color: #27ae60; font-weight: bold; }
+        .grade-b { color: #2ecc71; font-weight: bold; }
+        .grade-c { color: #f39c12; font-weight: bold; }
+        .grade-d { color: #e67e22; font-weight: bold; }
+        .grade-f { color: #e74c3c; font-weight: bold; }
+
+        a { color: #2c3e50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<a href="/" class="back-link">← Назад на почетна</a>
+
+<h1>Batch резултати</h1>
+<p>Скенирани <strong th:text="${sessions.size()}"></strong> сајтови</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>URL</th>
+        <th>Статус</th>
+        <th>Score</th>
+        <th>Grade</th>
+        <th>Детали</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="crawlSession : ${sessions}">
+        <td th:text="${crawlSession.id}"></td>
+        <td th:text="${crawlSession.baseUrl}"></td>
+        <td>
+            <span th:text="${crawlSession.status}"
+                  th:class="${crawlSession.status == 'DONE'} ? 'status-done' : 'status-failed'">
+            </span>
+        </td>
+        <td th:text="${crawlSession.averageScore}"></td>
+        <td>
+            <span th:text="${crawlSession.overallGrade}"
+                  th:class="'grade-' + ${crawlSession.overallGrade.toLowerCase()}">
+            </span>
+        </td>
+        <td>
+            <a th:href="@{/sessions/{id}(id=${crawlSession.id})}">
+                Погледај →
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
